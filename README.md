@@ -1,6 +1,6 @@
 # selective_copy
 
-Simple command line application that copies all files with given extension from a directory and its subfolders to an another directory. \
+Simple command line application that copies all files with given extension from a directory and its subfolders to an another directory showing progress bar and remaining files counter.\
 Allows to preserve source folder structure and to create a log if necessary.\
 Opens a filedialog if source and/or destination are not given in the command line.\
 Creates folders in destination if they don't exist.
