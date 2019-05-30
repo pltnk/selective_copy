@@ -76,6 +76,8 @@ def get_total(source, extension):
     """
     Count all appearances of files with given extension
     in the source folder and its subfolders.
+    If there are no such files in the given directory
+    terminate the program and print error statement.
     :param source: str. Source folder path.
     :param extension: str. Extension of files.
     :return: int. Total number of said files.
@@ -85,6 +87,8 @@ def get_total(source, extension):
         for filename in filenames:
             if filename.endswith(extension):
                 total += 1
+    if total == 0:
+        sys.exit(f'Error: There are no {extension} files in {source}.')
     return total
 
 
@@ -164,7 +168,8 @@ def copy_with_structure(source, destination, extension):
 
 def save_log(log, destination):
     """
-    Save log list as selective_copy.log in the destination folder.
+    Save log list as selective_copy.log in the destination folder
+    or append info to the existing one.
     :param log: list of str. Log entries.
     :param destination: str. Destination folder path.
     :return: NoneType
@@ -179,20 +184,18 @@ def save_log(log, destination):
 
 if __name__ == '__main__':
     parser, args = parse_args()
-    from_folder = select_source(args)
-    to_folder = select_destination(args)
     extension = f'.{args.ext}'
+    from_folder = select_source(args)
     total = get_total(from_folder, extension)
+    to_folder = select_destination(args)
     copied = 0
     log = []
     date = datetime.now().strftime('%d.%m.%Y')
 
     # checking for errors
-    if total == 0:
-        sys.exit(f'Error: There are no {extension} files in {from_folder}.')
     if from_folder == os.path.dirname(to_folder) or from_folder == to_folder:
         sys.exit(f'Error: A destination folder must be outside of source folder.')
-
+    
     # main block
     os.chdir(from_folder)
     if args.preserve:
