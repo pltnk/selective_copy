@@ -1,6 +1,6 @@
 #! python3
 # selective_copy.py - copies all files with given extension from a directory
-# and its subfolders to an another directory.
+# and its subfolders to another directory.
 # Allows to preserve source folder structure and to create a log if necessary.
 # Opens a filedialog if source and/or destination are not given in the command line.
 # Creates folders in destination if they don't exist.
@@ -17,8 +17,8 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(description='Copy all files with given extension from a directory and it\'s sub folders '
-                                        'to an another directory. '
+    parser = ArgumentParser(description='Copy all files with given extension from a directory and its subfolders '
+                                        'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', help='extension for the files to copy, enter without a dot', type=str)
     parser.add_argument('-s', '--source', help='source path', type=str)
@@ -75,7 +75,7 @@ def select_destination(args):
 def get_total(source, extension):
     """
     Count all appearances of files with given extension
-    in the source folder and it's subfolders.
+    in the source folder and its subfolders.
     :param source: str. Source folder path.
     :param extension: str. Extension of files.
     :return: int. Total number of said files.
