@@ -153,7 +153,7 @@ def copy_with_structure(source, destination, extension):
     """
     show_progress_bar(total)
     for foldername, subfolders, filenames in os.walk(source):
-        path = os.path.join(destination, f'{extension} from {os.path.basename(source)}', os.path.relpath(foldername))
+        path = os.path.join(destination, f'{args.ext} from {os.path.basename(source)}', os.path.relpath(foldername))
         for filename in filenames:
             if filename.endswith(extension):
                 time = datetime.now().strftime("%H:%M:%S")
