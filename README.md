@@ -1,4 +1,4 @@
-# selective_copy
+# Selective Copy
 
 Simple command line application that copies all files with given extension from a directory and its subfolders to another directory showing progress bar and remaining files counter.\
 Allows to preserve a source folder structure and to create a log if necessary.\
