@@ -193,7 +193,7 @@ if __name__ == '__main__':
     date = datetime.now().strftime('%d.%m.%Y')
 
     # checking for errors
-    if from_folder == os.path.dirname(to_folder) or from_folder == to_folder:
+    if from_folder in to_folder:
         sys.exit(f'Error: A destination folder must be outside of source folder.')
     
     # main block
