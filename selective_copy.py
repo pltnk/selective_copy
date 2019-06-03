@@ -200,15 +200,16 @@ if __name__ == '__main__':
     # main block
     os.chdir(from_folder)
     if args.preserve:
-        logger.info(f'Copying {total} {extension} files from {from_folder} to {to_folder} '
-                    f'preserving source folder structure.\n')
-        print(f'Copying {total} {extension} files from {from_folder} to {to_folder} '
-              f'preserving source folder structure.')
+        msg = f'Copying {total} {extension} files from {from_folder} to {to_folder} preserving source folder structure.'
+        print(msg)
+        logger.info(msg)
         copy_with_structure(from_folder, to_folder, extension)
     else:
-        logger.info(f'Copying {total} {extension} files from {from_folder} to {to_folder}\n')
-        print(f'Copying {total} {extension} files from {from_folder} to {to_folder}')
+        msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
+        print(msg)
+        logger.info(msg)
         copy(from_folder, to_folder, extension)
+
     logger.info(f'Process finished.\n\n')
     if args.log:
         logger.handlers[0].close()
