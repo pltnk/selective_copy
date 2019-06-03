@@ -6,9 +6,8 @@
 # Creates folders in destination if they don't exist.
 
 
-import os, shutil, sys
+import logging, os, shutil, sys
 from argparse import ArgumentParser
-from datetime import datetime
 from tkinter.filedialog import askdirectory
 
 
@@ -33,6 +32,27 @@ def parse_args():
     return parser, args
 
 
+def create_logger(args, destination):
+    """
+    Create logger and selective_copy.log file
+    in the destination folder if logging is turned on
+    in command line arguments. If not create only logger.
+    :param args: Namespace. Command line arguments.
+    :param destination: str. Destination path.
+    :return: Logger.
+    """
+    logger = logging.getLogger('selective_copy')
+    if args.log:
+        logger.setLevel(logging.INFO)
+        fh = logging.FileHandler(f'{destination}\\selective_copy.log', encoding='utf-8')
+        formatter = logging.Formatter('%(asctime)s - %(message)s', '%d.%m.%Y %H:%M:%S')
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+    else:
+        logger.setLevel(logging.CRITICAL)
+    return logger
+
+
 def select_source(args):
     """
     Check if the source path is in the command line arguments,
@@ -49,6 +69,7 @@ def select_source(args):
     else:
         source = args.source
         if not os.path.exists(source):
+            logger.error('Error: Source path does not exist.')
             sys.exit('Error: Source path does not exist.')
     return source
 
@@ -88,6 +109,7 @@ def get_total(source, extension):
             if filename.endswith(extension):
                 total += 1
     if total == 0:
+        logger.error(f'Error: There are no {extension} files in {source}.')
         sys.exit(f'Error: There are no {extension} files in {source}.')
     return total
 
@@ -129,15 +151,12 @@ def copy(source, destination, extension):
     for foldername, subfolders, filenames in os.walk(source):
         for filename in filenames:
             if filename.endswith(extension):
-                time = datetime.now().strftime("%H:%M:%S")
                 if not os.path.exists(os.path.join(destination, filename)):
-                    if args.log:
-                        log.append(f'{time} {filename} from {foldername}')
+                    logger.info(f'{filename} from {foldername}')
                     shutil.copy(os.path.join(foldername, filename), os.path.join(destination, filename))
                 else:
                     new_filename = f'{os.path.basename(foldername)}_{filename}'
-                    if args.log:
-                        log.append(f'{time} {filename} from {foldername} and saving it as {new_filename}')
+                    logger.info(f'{filename} from {foldername} and saving it as {new_filename}')
                     shutil.copy(os.path.join(foldername, filename), os.path.join(destination, new_filename))
                 show_progress_bar(total, copied)
 
@@ -156,30 +175,12 @@ def copy_with_structure(source, destination, extension):
         path = os.path.join(destination, f'{extension} from {os.path.basename(source)}', os.path.relpath(foldername))
         for filename in filenames:
             if filename.endswith(extension):
-                time = datetime.now().strftime("%H:%M:%S")
                 if not os.path.exists(path):
                     os.makedirs(path)
                 if not os.path.exists(os.path.join(path, filename)):
-                    if args.log:
-                        log.append(f'{time} {filename} from {foldername}')
+                    logger.info(f'{filename} from {foldername}')
                     shutil.copy(os.path.join(foldername, filename), os.path.join(path, filename))
                     show_progress_bar(total, copied)
-
-
-def save_log(log, destination):
-    """
-    Save log list as selective_copy.log in the destination folder
-    or append info to the existing one.
-    :param log: list of str. Log entries.
-    :param destination: str. Destination folder path.
-    :return: NoneType
-    """
-    date_time = datetime.now().strftime('%d.%m.%Y at %H:%M:%S')
-    with open(os.path.join(destination, 'selective_copy.log'), 'a', encoding='utf8') as logfile:
-        for item in log:
-            logfile.write(f'{item}\n')
-        logfile.write(f'\nProcess finished {date_time}.\n\n')
-    print(f'Log saved.')
 
 
 if __name__ == '__main__':
@@ -188,29 +189,28 @@ if __name__ == '__main__':
     from_folder = select_source(args)
     total = get_total(from_folder, extension)
     to_folder = select_destination(args)
+    logger = create_logger(args, to_folder)
     copied = 0
-    log = []
-    date = datetime.now().strftime('%d.%m.%Y')
 
     # checking for errors
     if from_folder in to_folder:
-        sys.exit(f'Error: A destination folder must be outside of source folder.')
+        logger.error('Error: A destination folder must be outside of source folder.')
+        sys.exit('Error: A destination folder must be outside of source folder.')
     
     # main block
     os.chdir(from_folder)
     if args.preserve:
+        logger.info(f'Copying {total} {extension} files from {from_folder} to {to_folder} '
+                    f'preserving source folder structure.\n')
         print(f'Copying {total} {extension} files from {from_folder} to {to_folder} '
               f'preserving source folder structure.')
         copy_with_structure(from_folder, to_folder, extension)
     else:
+        logger.info(f'Copying {total} {extension} files from {from_folder} to {to_folder}\n')
         print(f'Copying {total} {extension} files from {from_folder} to {to_folder}')
         copy(from_folder, to_folder, extension)
-
-    # creating log if necessary
+    logger.info(f'Process finished.\n\n')
     if args.log:
-        if args.preserve:
-            log.insert(0, f'{date} Copying {total} {extension} files from {from_folder} to {to_folder} '
-                          f'preserving source folder structure.\n')
-        else:
-            log.insert(0, f'{date} Copying {total} {extension} files from {from_folder} to {to_folder}\n')
-        save_log(log, to_folder)
+        logger.handlers[0].close()
+        logger.handlers = []
+        print('Log saved.')
