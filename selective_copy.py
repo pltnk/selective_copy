@@ -164,7 +164,7 @@ def copy(todo_list):
     """
     Copy files according to source and destination paths
     given in todo_list.
-    :param todo_list: list of list of str. To-do list.
+    :param todo_list: list of list of str.
     :return: NoneType.
     """
     show_progress_bar(total)
