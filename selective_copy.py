@@ -72,7 +72,7 @@ def check_for_errors(source, destination, extension, total):
         message = f'Error: There are no {extension} files in {source}.'
     elif source in destination:
         message = f'Error: A destination folder must be outside of source folder. ' \
-            f'Paths given: source - {source} | destination - {destination}.'
+                  f'Paths given: source - {source} | destination - {destination}.'
     else:
         message = None
     return message
