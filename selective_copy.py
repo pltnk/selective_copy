@@ -114,17 +114,26 @@ def select_destination(args):
 
 
 def get_todo(source, destination, extension, args):
-    todo = []
+    """
+    Create a to-do list where each sublist represents one file and contains
+    source and destination paths for this file.
+    :param source: str. Source folder path.
+    :param destination: Destination folder path.
+    :param extension: str. Extension of the files to copy.
+    :param args: Namespace. Command line arguments.
+    :return: list of list of str. To-do list.
+    """
+    todo_list = []
     for foldername, subfolders, filenames in os.walk(source):
         if args.preserve:
             path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
         for filename in filenames:
             if filename.endswith(extension):
                 if args.preserve:
-                    todo.append([os.path.join(foldername, filename), os.path.join(path, filename)])
+                    todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                 else:
-                    todo.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
-    return todo
+                    todo_list.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
+    return todo_list
 
 
 # Progress bar is made following the materials from this thread:
@@ -151,9 +160,15 @@ def show_progress_bar(total, counter=0, length=80):
         print()
 
 
-def copy(todo):
+def copy(todo_list):
+    """
+    Copy files according to source and destination paths
+    given in todo_list.
+    :param todo_list: list of list of str. To-do list.
+    :return: NoneType.
+    """
     show_progress_bar(total)
-    for item in todo:
+    for item in todo_list:
         if not os.path.exists(os.path.dirname(item[1])):
             os.makedirs(os.path.dirname(item[1]))
         if not os.path.exists(item[1]):
