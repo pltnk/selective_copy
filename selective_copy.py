@@ -47,7 +47,7 @@ def create_logger(args, destination):
     if args.log:
         logger.setLevel(logging.INFO)
         fh = logging.FileHandler(f'{destination}\\selective_copy.log', encoding='utf-8')
-        formatter = logging.Formatter('%(asctime)s - %(message)s', '%d.%m.%Y %H:%M:%S')
+        formatter = logging.Formatter('%(asctime)s %(message)s', '%d.%m.%Y %H:%M:%S')
         fh.setFormatter(formatter)
         logger.addHandler(fh)
     else:
@@ -113,20 +113,18 @@ def select_destination(args):
     return destination
 
 
-def get_total(source, extension):
-    """
-    Count all appearances of files with given extension
-    in the source folder and its subfolders.
-    :param source: str. Source folder path.
-    :param extension: str. Extension of files.
-    :return: int. Total number of said files.
-    """
-    total = 0
-    for f, s, filenames in os.walk(source):
+def get_todo(source, destination, extension, args):
+    todo = []
+    for foldername, subfolders, filenames in os.walk(source):
+        if args.preserve:
+            path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
         for filename in filenames:
             if filename.endswith(extension):
-                total += 1
-    return total
+                if args.preserve:
+                    todo.append([os.path.join(foldername, filename), os.path.join(path, filename)])
+                else:
+                    todo.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
+    return todo
 
 
 # Progress bar is made following the materials from this thread:
@@ -153,49 +151,19 @@ def show_progress_bar(total, counter=0, length=80):
         print()
 
 
-def copy(source, destination, extension):
-    """
-    Copy all files with extension from source folder and its subfolders
-    to the destination folder.
-    :param source: str. Source folder path.
-    :param destination: str. Destination folder path.
-    :param extension: str. Extension of the files to copy.
-    :return: NoneType.
-    """
+def copy(todo):
     show_progress_bar(total)
-    for foldername, subfolders, filenames in os.walk(source):
-        for filename in filenames:
-            if filename.endswith(extension):
-                if not os.path.exists(os.path.join(destination, filename)):
-                    logger.info(f'{filename} from {foldername}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(destination, filename))
-                else:
-                    new_filename = f'{os.path.basename(foldername)}_{filename}'
-                    logger.info(f'{filename} from {foldername} and saving it as {new_filename}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(destination, new_filename))
-                show_progress_bar(total, copied)
-
-
-def copy_with_structure(source, destination, extension):
-    """
-    Copy all files with extension from source folder and its subfolders
-    to the destination folder preserving source folder structure.
-    :param source: str. Source folder path.
-    :param destination: str. Destination folder path.
-    :param extension: str. Extension of the files to copy.
-    :return: NoneType.
-    """
-    show_progress_bar(total)
-    for foldername, subfolders, filenames in os.walk(source):
-        path = os.path.join(destination, f'{extension} from {os.path.basename(source)}', os.path.relpath(foldername))
-        for filename in filenames:
-            if filename.endswith(extension):
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                if not os.path.exists(os.path.join(path, filename)):
-                    logger.info(f'{filename} from {foldername}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(path, filename))
-                    show_progress_bar(total, copied)
+    for item in todo:
+        if not os.path.exists(os.path.dirname(item[1])):
+            os.makedirs(os.path.dirname(item[1]))
+        if not os.path.exists(item[1]):
+            logger.info(f'{item[0]}')
+            shutil.copy(item[0], item[1])
+        else:
+            new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
+            logger.info(f'*{item[0]} saving it as {new_filename}')
+            shutil.copy(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        show_progress_bar(total, copied)
 
 
 def close_log(args, logger):
@@ -216,9 +184,11 @@ if __name__ == '__main__':
     parser, args = parse_args()
     extension = f'.{args.ext}'
     from_folder = select_source(args)
-    total = get_total(from_folder, extension)
     to_folder = select_destination(args)
     logger = create_logger(args, to_folder)
+    os.chdir(from_folder)
+    to_copy = get_todo(from_folder, to_folder, extension, args)
+    total = len(to_copy)
     msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
     copied = 0
 
@@ -230,14 +200,12 @@ if __name__ == '__main__':
         sys.exit(error)
 
     # main block
-    os.chdir(from_folder)
     if args.preserve:
         print(f'{msg} preserving source folder structure')
         logger.info(f'{msg} preserving source folder structure')
-        copy_with_structure(from_folder, to_folder, extension)
     else:
         print(msg)
         logger.info(msg)
-        copy(from_folder, to_folder, extension)
+    copy(to_copy)
     logger.info(f'Process finished\n')
     close_log(args, logger)
