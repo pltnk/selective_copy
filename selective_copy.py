@@ -118,7 +118,7 @@ def get_todo(source, destination, extension, args):
     Create a to-do list where each sublist represents one file and contains
     source and destination paths for this file.
     :param source: str. Source folder path.
-    :param destination: Destination folder path.
+    :param destination: str. Destination folder path.
     :param extension: str. Extension of the files to copy.
     :param args: Namespace. Command line arguments.
     :return: list of list of str. To-do list.
