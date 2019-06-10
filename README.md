@@ -8,7 +8,7 @@ Creates folders in a destination path if they don't exist.
 Usage:
 <pre>
 Positional arguments:
-ext                     Extension for the files to copy, enter without a dot.
+ext                     Extension of the files to copy, enter without a dot.
 
 Optional arguments:
 -s SRC, --source SRC    Source folder path.
