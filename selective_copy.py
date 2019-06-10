@@ -21,9 +21,9 @@ def parse_args():
     parser = ArgumentParser(description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
-    parser.add_argument('ext', help='extension for the files to copy, enter without a dot', type=str)
-    parser.add_argument('-s', '--source', help='source path', type=str, metavar='SRC')
-    parser.add_argument('-d', '--dest', help='destination path', type=str, metavar='DST')
+    parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
+    parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
+    parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
