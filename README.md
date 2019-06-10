@@ -8,14 +8,14 @@ Creates folders in a destination path if they don't exist.
 Usage:
 <pre>
 Positional arguments:
-ext                         Extension for the files to copy, enter without a dot.
+ext                     Extension for the files to copy, enter without a dot.
 
 Optional arguments:
--s SOURCE, --source SOURCE  Source path.
--d DEST, --dest DEST        Destination path.
--p, --preserve              Preserve source folder structure.
--l, --log                   Create and save log to the destination folder.
--h, --help                  Show this help message and exit.
+-s SRC, --source SRC    Source folder path.
+-d DST, --dest DST      Destination folder path.
+-p, --preserve          Preserve source folder structure.
+-l, --log               Create and save log to the destination folder.
+-h, --help              Show this help message and exit.
 </pre>
 
 ## License
