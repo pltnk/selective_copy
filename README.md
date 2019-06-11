@@ -13,7 +13,8 @@ ext                     Extension of the files to copy, enter without a dot.
 Optional arguments:
 -s SRC, --source SRC    Source folder path.
 -d DST, --dest DST      Destination folder path.
--c, --current           Use current working directory as a source folder.
+-sc, --srccwd           Use current working directory as a source folder.
+-dc, --dstcwd           Use current working directory as a destination folder.
 -p, --preserve          Preserve source folder structure.
 -l, --log               Create and save log to the destination folder.
 -h, --help              Show this help message and exit.
