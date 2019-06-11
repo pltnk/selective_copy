@@ -22,9 +22,10 @@ def parse_args():
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
-    parser.add_argument('-c', '--current', action='store_true', help='use current working directory as source folder')
     parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
     parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
+    parser.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
+    parser.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
@@ -86,7 +87,7 @@ def select_source(args):
     :param args: Namespace. Command line arguments.
     :return: str. Source folder path.
     """
-    if args.current:
+    if args.srccwd:
         source = os.getcwd()
     else:
         if args.source is None:
@@ -106,14 +107,17 @@ def select_destination(args):
     :param args: Namespace. Command line arguments.
     :return: str. Destination folder path.
     """
-    if args.dest is None:
-        print('Choose a destination path.')
-        destination = os.path.normpath(askdirectory())
-        print(f'Destination path: {destination}')
+    if args.dstcwd:
+        destination = os.getcwd()
     else:
-        destination = args.dest
-        if not os.path.exists(destination):
-            os.makedirs(destination)
+        if args.dest is None:
+            print('Choose a destination path.')
+            destination = os.path.normpath(askdirectory())
+            print(f'Destination path: {destination}')
+        else:
+            destination = args.dest
+            if not os.path.exists(destination):
+                os.makedirs(destination)
     return destination
 
 
