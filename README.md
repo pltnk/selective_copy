@@ -5,8 +5,9 @@ Allows to preserve a source folder structure and to create a log if necessary.\
 Opens a filedialog if source and/or destination are not given in the command line.\
 Creates folders in a destination path if they don't exist.
 
-Usage:
 <pre>
+Usage: selective_copy.py ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]
+
 Positional arguments:
 ext                     Extension of the files to copy, enter without a dot.
 
