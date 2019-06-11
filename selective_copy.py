@@ -46,14 +46,13 @@ def create_logger(args, destination):
     :return: Logger.
     """
     logger = logging.getLogger('selective_copy')
+    logger.setLevel(logging.CRITICAL)
     if args.log:
         logger.setLevel(logging.INFO)
         fh = logging.FileHandler(os.path.join(destination, 'selective_copy.log'), encoding='utf-8')
         formatter = logging.Formatter('%(asctime)s %(message)s', '%d.%m.%Y %H:%M:%S')
         fh.setFormatter(formatter)
         logger.addHandler(fh)
-    else:
-        logger.setLevel(logging.CRITICAL)
     return logger
 
 
