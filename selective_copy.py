@@ -124,6 +124,7 @@ def get_todo(source, destination, extension, args):
     :return: list of list of str. To-do list.
     """
     todo_list = []
+    os.chdir(source)
     for foldername, subfolders, filenames in os.walk(source):
         if args.preserve:
             path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
@@ -201,7 +202,6 @@ if __name__ == '__main__':
     from_folder = select_source(args)
     to_folder = select_destination(args)
     logger = create_logger(args, to_folder)
-    os.chdir(from_folder)
     to_copy = get_todo(from_folder, to_folder, extension, args)
     total = len(to_copy)
     msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
