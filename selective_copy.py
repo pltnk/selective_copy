@@ -18,14 +18,16 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(description='Copy all files with given extension from a directory and its subfolders '
+    parser = ArgumentParser(usage='selective_copy.py ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
+                            description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
     parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
     parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
-    parser.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
-    parser.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
+    group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
