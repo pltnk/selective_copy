@@ -132,16 +132,19 @@ def get_todo(source, destination, extension, args):
     :return: list of list of str. To-do list.
     """
     todo_list = []
-    os.chdir(source)
-    for foldername, subfolders, filenames in os.walk(source):
-        if args.preserve:
-            path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
-        for filename in filenames:
-            if filename.endswith(extension):
-                if args.preserve:
-                    todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
-                else:
-                    todo_list.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
+    try:
+        os.chdir(source)
+        for foldername, subfolders, filenames in os.walk(source):
+            if args.preserve:
+                path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
+            for filename in filenames:
+                if filename.endswith(extension):
+                    if args.preserve:
+                        todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
+                    else:
+                        todo_list.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
+    except FileNotFoundError:
+        pass
     return todo_list
 
 
