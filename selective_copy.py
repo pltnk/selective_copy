@@ -18,12 +18,16 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(description='Copy all files with given extension from a directory and its subfolders '
+    parser = ArgumentParser(usage='selective_copy.py ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
+                            description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
-    parser.add_argument('ext', help='extension for the files to copy, enter without a dot', type=str)
-    parser.add_argument('-s', '--source', help='source path', type=str)
-    parser.add_argument('-d', '--dest', help='destination path', type=str)
+    parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
+    parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
+    parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
+    group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
@@ -44,14 +48,13 @@ def create_logger(args, destination):
     :return: Logger.
     """
     logger = logging.getLogger('selective_copy')
+    logger.setLevel(logging.CRITICAL)
     if args.log:
         logger.setLevel(logging.INFO)
-        fh = logging.FileHandler(f'{destination}\\selective_copy.log', encoding='utf-8')
-        formatter = logging.Formatter('%(asctime)s - %(message)s', '%d.%m.%Y %H:%M:%S')
+        fh = logging.FileHandler(os.path.join(destination, 'selective_copy.log'), encoding='utf-8')
+        formatter = logging.Formatter('%(asctime)s %(message)s', '%d.%m.%Y %H:%M:%S')
         fh.setFormatter(formatter)
         logger.addHandler(fh)
-    else:
-        logger.setLevel(logging.CRITICAL)
     return logger
 
 
@@ -72,7 +75,7 @@ def check_for_errors(source, destination, extension, total):
         message = f'Error: There are no {extension} files in {source}.'
     elif source in destination:
         message = f'Error: A destination folder must be outside of source folder. ' \
-            f'Paths given: source - {source} | destination - {destination}.'
+                  f'Paths given: source - {source} | destination - {destination}.'
     else:
         message = None
     return message
@@ -85,12 +88,15 @@ def select_source(args):
     :param args: Namespace. Command line arguments.
     :return: str. Source folder path.
     """
-    if args.source is None:
-        print('Choose a source path.')
-        source = os.path.normpath(askdirectory())
-        print(f'Source path: {source}')
+    if args.srccwd:
+        source = os.getcwd()
     else:
-        source = args.source
+        if args.source is None:
+            print('Choose a source path.')
+            source = os.path.normpath(askdirectory())
+            print(f'Source path: {source}')
+        else:
+            source = args.source
     return source
 
 
@@ -102,31 +108,45 @@ def select_destination(args):
     :param args: Namespace. Command line arguments.
     :return: str. Destination folder path.
     """
-    if args.dest is None:
-        print('Choose a destination path.')
-        destination = os.path.normpath(askdirectory())
-        print(f'Destination path: {destination}')
+    if args.dstcwd:
+        destination = os.getcwd()
     else:
-        destination = args.dest
-        if not os.path.exists(destination):
-            os.makedirs(destination)
+        if args.dest is None:
+            print('Choose a destination path.')
+            destination = os.path.normpath(askdirectory())
+            print(f'Destination path: {destination}')
+        else:
+            destination = args.dest
+            if not os.path.exists(destination):
+                os.makedirs(destination)
     return destination
 
 
-def get_total(source, extension):
+def get_todo(source, destination, extension, args):
     """
-    Count all appearances of files with given extension
-    in the source folder and its subfolders.
+    Create a to-do list where each sublist represents one file and contains
+    source and destination paths for this file.
     :param source: str. Source folder path.
-    :param extension: str. Extension of files.
-    :return: int. Total number of said files.
+    :param destination: str. Destination folder path.
+    :param extension: str. Extension of the files to copy.
+    :param args: Namespace. Command line arguments.
+    :return: list of list of str. To-do list.
     """
-    total = 0
-    for f, s, filenames in os.walk(source):
-        for filename in filenames:
-            if filename.endswith(extension):
-                total += 1
-    return total
+    todo_list = []
+    try:
+        os.chdir(source)
+        for foldername, subfolders, filenames in os.walk(source):
+            if args.preserve:
+                path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
+            for filename in filenames:
+                if filename.endswith(extension):
+                    if args.preserve:
+                        todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
+                    else:
+                        todo_list.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
+    except FileNotFoundError:
+        pass
+    return todo_list
 
 
 # Progress bar is made following the materials from this thread:
@@ -153,49 +173,25 @@ def show_progress_bar(total, counter=0, length=80):
         print()
 
 
-def copy(source, destination, extension):
+def copy(todo_list):
     """
-    Copy all files with extension from source folder and its subfolders
-    to the destination folder.
-    :param source: str. Source folder path.
-    :param destination: str. Destination folder path.
-    :param extension: str. Extension of the files to copy.
+    Copy files according to source and destination paths
+    given in todo_list.
+    :param todo_list: list of list of str.
     :return: NoneType.
     """
     show_progress_bar(total)
-    for foldername, subfolders, filenames in os.walk(source):
-        for filename in filenames:
-            if filename.endswith(extension):
-                if not os.path.exists(os.path.join(destination, filename)):
-                    logger.info(f'{filename} from {foldername}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(destination, filename))
-                else:
-                    new_filename = f'{os.path.basename(foldername)}_{filename}'
-                    logger.info(f'{filename} from {foldername} and saving it as {new_filename}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(destination, new_filename))
-                show_progress_bar(total, copied)
-
-
-def copy_with_structure(source, destination, extension):
-    """
-    Copy all files with extension from source folder and its subfolders
-    to the destination folder preserving source folder structure.
-    :param source: str. Source folder path.
-    :param destination: str. Destination folder path.
-    :param extension: str. Extension of the files to copy.
-    :return: NoneType.
-    """
-    show_progress_bar(total)
-    for foldername, subfolders, filenames in os.walk(source):
-        path = os.path.join(destination, f'{extension} from {os.path.basename(source)}', os.path.relpath(foldername))
-        for filename in filenames:
-            if filename.endswith(extension):
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                if not os.path.exists(os.path.join(path, filename)):
-                    logger.info(f'{filename} from {foldername}')
-                    shutil.copy(os.path.join(foldername, filename), os.path.join(path, filename))
-                    show_progress_bar(total, copied)
+    for item in todo_list:
+        if not os.path.exists(os.path.dirname(item[1])):
+            os.makedirs(os.path.dirname(item[1]))
+        if not os.path.exists(item[1]):
+            logger.info(f'{item[0]}')
+            shutil.copy(item[0], item[1])
+        else:
+            new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
+            logger.info(f'*{item[0]} saving it as {new_filename}')
+            shutil.copy(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        show_progress_bar(total, copied)
 
 
 def close_log(args, logger):
@@ -216,9 +212,10 @@ if __name__ == '__main__':
     parser, args = parse_args()
     extension = f'.{args.ext}'
     from_folder = select_source(args)
-    total = get_total(from_folder, extension)
     to_folder = select_destination(args)
     logger = create_logger(args, to_folder)
+    to_copy = get_todo(from_folder, to_folder, extension, args)
+    total = len(to_copy)
     msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
     copied = 0
 
@@ -230,14 +227,12 @@ if __name__ == '__main__':
         sys.exit(error)
 
     # main block
-    os.chdir(from_folder)
     if args.preserve:
         print(f'{msg} preserving source folder structure')
         logger.info(f'{msg} preserving source folder structure')
-        copy_with_structure(from_folder, to_folder, extension)
     else:
         print(msg)
         logger.info(msg)
-        copy(from_folder, to_folder, extension)
+    copy(to_copy)
     logger.info(f'Process finished\n')
     close_log(args, logger)
