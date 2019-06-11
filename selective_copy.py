@@ -22,6 +22,7 @@ def parse_args():
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
+    parser.add_argument('-c', '--current', action='store_true', help='use current working directory as source folder')
     parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
     parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
@@ -85,12 +86,15 @@ def select_source(args):
     :param args: Namespace. Command line arguments.
     :return: str. Source folder path.
     """
-    if args.source is None:
-        print('Choose a source path.')
-        source = os.path.normpath(askdirectory())
-        print(f'Source path: {source}')
+    if args.current:
+        source = os.getcwd()
     else:
-        source = args.source
+        if args.source is None:
+            print('Choose a source path.')
+            source = os.path.normpath(askdirectory())
+            print(f'Source path: {source}')
+        else:
+            source = args.source
     return source
 
 
