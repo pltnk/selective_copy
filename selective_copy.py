@@ -174,7 +174,10 @@ def show_progress_bar(total, counter=0, length=80):
         suffix = f'Files left: {total - counter} '
     else:
         suffix = 'Done           '
-    print(f'\rProgress: |{bar}| {percent}% {suffix}', end='\r', flush=True)
+    if term_width <= 65:
+        print(f'\rProgress: {percent}% {suffix}', end='\r', flush=True)
+    else:
+        print(f'\rProgress: |{bar}| {percent}% {suffix}', end='\r', flush=True)
     copied += 1
     if counter == total:
         print()
