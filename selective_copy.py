@@ -161,12 +161,7 @@ def show_progress_bar(total, counter=0, length=80):
     """
     global copied
     term_width = os.get_terminal_size(0)[0]
-    if term_width > 132:
-        length = 100
-    elif term_width < 132:
-        length = int(term_width * 0.5)
-    elif term_width <= 80:
-        length = int(term_width * 0.2)
+    length = term_width - (len(str(total)) + 30)
     percent = round(100 * (counter / total))
     filled_length = int(length * counter // total)
     bar = f'|{"=" * filled_length}{"-" * (length - filled_length)}|' if term_width > 50 else ''
