@@ -160,8 +160,11 @@ def show_progress_bar(total, counter=0, length=80):
     :return: NoneType.
     """
     global copied
-    term_width = os.get_terminal_size(0)[0]
-    length = term_width - (len(str(total)) + 30)
+    try:
+        term_width = os.get_terminal_size(0)[0]
+        length = term_width - (len(str(total)) + 30)
+    except OSError:
+        term_width = 80
     percent = round(100 * (counter / total))
     filled_length = int(length * counter // total)
     bar = f'|{"=" * filled_length}{"-" * (length - filled_length)}|' if term_width > 50 else ''
