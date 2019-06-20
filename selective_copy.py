@@ -166,8 +166,7 @@ def show_progress_bar(total, counter=0):
     filled = int(length * counter // total)
     bar = f'|{"=" * filled}{"-" * (length - filled)}|' if term_width > 50 else ''
     suffix = f'Files left: {total - counter} ' if counter < total else 'Done           '
-    output = f'\rProgress: {bar} {percent}% {suffix}'
-    print(f'{output}', end='\r', flush=True)
+    print(f'\rProgress: {bar} {percent}% {suffix}', end='\r', flush=True)
     copied += 1
     if counter == total:
         print()
