@@ -149,8 +149,6 @@ def get_todo(source, destination, extension, args):
     return todo_list
 
 
-# Progress bar is made following the materials from this thread:
-# https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console/27871113
 def show_progress_bar(total, counter=0):
     """
     Print progress bar.
