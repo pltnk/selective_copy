@@ -151,23 +151,22 @@ def get_todo(source, destination, extension, args):
 
 # Progress bar is made following the materials from this thread:
 # https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console/27871113
-def show_progress_bar(total, counter=0, length=80):
+def show_progress_bar(total, counter=0):
     """
     Print progress bar.
     :param total: int. Total number of iterations.
     :param counter: int. Current iteration.
-    :param length: int. Length of progress bar in characters.
     :return: NoneType.
     """
     global copied
     try:
         term_width = os.get_terminal_size(0)[0]
-        length = term_width - (len(str(total)) + 30)
     except OSError:
         term_width = 80
+    length = term_width - (len(str(total)) + 30)
     percent = round(100 * (counter / total))
-    filled_length = int(length * counter // total)
-    bar = f'|{"=" * filled_length}{"-" * (length - filled_length)}|' if term_width > 50 else ''
+    filled = int(length * counter // total)
+    bar = f'|{"=" * filled}{"-" * (length - filled)}|' if term_width > 50 else ''
     suffix = f'Files left: {total - counter} ' if counter < total else 'Done           '
     output = f'\rProgress: {bar} {percent}% {suffix}'
     print(f'{output}', end='\r', flush=True)
