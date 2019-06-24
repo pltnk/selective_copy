@@ -60,9 +60,8 @@ def create_logger(args, destination):
 
 def check_for_errors(source, destination, extension, total):
     """
-    Check for errors, return corresponding
-    error statement if any errors occurred.
-    Otherwise return None.
+    Check for errors, raise corresponding
+    Exception if any errors occurred.
     :param source: str. Source folder path.
     :param destination: str. Destination folder path.
     :param extension: str. Extension of files.
@@ -70,15 +69,14 @@ def check_for_errors(source, destination, extension, total):
     :return: str or NoneType. Error statement or None.
     """
     if not os.path.exists(source):
-        message = f'Error: Source path {source} does not exist.'
+        raise Exception(f'Error: Source path {source} does not exist.')
     elif total == 0:
-        message = f'Error: There are no {extension} files in {source}.'
+        raise Exception(f'Error: There are no {extension} files in {source}.')
     elif source in destination:
-        message = f'Error: A destination folder must be outside of source folder. ' \
-                  f'Paths given: source - {source} | destination - {destination}.'
+        raise Exception(f'Error: A destination folder must be outside of source folder. '
+                        f'Paths given: source - {source} | destination - {destination}.')
     else:
-        message = None
-    return message
+        pass
 
 
 def select_source(args):
@@ -219,11 +217,12 @@ if __name__ == '__main__':
     copied = 0
 
     # checking for errors
-    error = check_for_errors(from_folder, to_folder, extension, total)
-    if error:
-        logger.error(f'{error}\n')
+    try:
+        check_for_errors(from_folder, to_folder, extension, total)
+    except Exception as e:
+        logger.error(f'{e}\n')
         close_log(args, logger)
-        sys.exit(error)
+        sys.exit(e)
 
     # main block
     if args.preserve:
