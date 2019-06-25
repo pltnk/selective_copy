@@ -205,17 +205,13 @@ def close_log(args, logger):
         print('Log saved')
 
 
-if __name__ == '__main__':
-    parser, args = parse_args()
-    extension = f'.{args.ext}'
-    from_folder = select_source(args)
-    to_folder = select_destination(args)
-    logger = create_logger(args, to_folder)
-    to_copy = get_todo(from_folder, to_folder, extension, args)
-    total = len(to_copy)
-    msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
-    copied = 0
-
+def main():
+    """
+    Check for errors and terminate the program if found any.
+    If errors are absent copy files according to command line
+    arguments.
+    :return: NoneType.
+    """
     # checking for errors
     try:
         check_for_errors(from_folder, to_folder, extension, total)
@@ -234,3 +230,18 @@ if __name__ == '__main__':
     copy(to_copy)
     logger.info(f'Process finished\n')
     close_log(args, logger)
+
+
+parser, args = parse_args()
+extension = f'.{args.ext}'
+from_folder = select_source(args)
+to_folder = select_destination(args)
+logger = create_logger(args, to_folder)
+to_copy = get_todo(from_folder, to_folder, extension, args)
+total = len(to_copy)
+msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
+copied = 0
+
+
+if __name__ == '__main__':
+    main()
