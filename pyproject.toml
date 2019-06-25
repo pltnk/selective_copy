@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "slcp"
+version = "0.1.0"
+description = "Copy all files with given extension from a directory and its subfolders to another directory."
+authors = ["Kirill Plotnikov <kpltnk@gmail.com>"]
+license = "MIT"
+readme = 'README.md'
+repository = "https://github.com/pltnk/selective_copy"
+homepage = "https://github.com/pltnk/selective_copy"
+keywords = ['cli', 'copy', 'selective copy']
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+python = "^3.7"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+slcp = 'slcp:main'
