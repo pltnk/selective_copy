@@ -1,4 +1,3 @@
-#! python3
 # slcp.py - copies all files with given extension from a directory
 # and its subfolders to another directory.
 # Allows to preserve source folder structure and to create a log if necessary.
