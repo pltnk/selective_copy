@@ -1,5 +1,4 @@
-#! python3
-# selective_copy.py - copies all files with given extension from a directory
+# slcp.py - copies all files with given extension from a directory
 # and its subfolders to another directory.
 # Allows to preserve source folder structure and to create a log if necessary.
 # Opens a filedialog if source and/or destination are not given in the command line.
@@ -18,7 +17,7 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='selective_copy.py ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
+    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
                             description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
@@ -173,7 +172,8 @@ def show_progress_bar(total, counter=0):
 def copy(todo_list):
     """
     Copy files according to source and destination paths
-    given in todo_list.
+    given in todo_list. Each item in this list represents one file.
+    item[0] - source, item[1] - destination.
     :param todo_list: list of list of str.
     :return: NoneType.
     """
@@ -205,17 +205,13 @@ def close_log(args, logger):
         print('Log saved')
 
 
-if __name__ == '__main__':
-    parser, args = parse_args()
-    extension = f'.{args.ext}'
-    from_folder = select_source(args)
-    to_folder = select_destination(args)
-    logger = create_logger(args, to_folder)
-    to_copy = get_todo(from_folder, to_folder, extension, args)
-    total = len(to_copy)
-    msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
-    copied = 0
-
+def main():
+    """
+    Check for errors and terminate the program if found any.
+    If errors are absent copy files according to the
+    command line arguments.
+    :return: NoneType.
+    """
     # checking for errors
     try:
         check_for_errors(from_folder, to_folder, extension, total)
@@ -234,3 +230,18 @@ if __name__ == '__main__':
     copy(to_copy)
     logger.info(f'Process finished\n')
     close_log(args, logger)
+
+
+parser, args = parse_args()
+extension = f'.{args.ext}'
+from_folder = select_source(args)
+to_folder = select_destination(args)
+logger = create_logger(args, to_folder)
+to_copy = get_todo(from_folder, to_folder, extension, args)
+total = len(to_copy)
+msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
+copied = 0
+
+
+if __name__ == '__main__':
+    main()

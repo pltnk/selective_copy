@@ -1,12 +1,23 @@
 # Selective Copy
+[![Python Version](https://img.shields.io/pypi/pyversions/slcp.svg)](https://www.python.org/downloads/release/python-370/)
+[![PyPi Version](https://img.shields.io/pypi/v/slcp.svg)](https://pypi.org/project/slcp/)
+[![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
 
 Simple command line application that copies all files with given extension from a directory and its subfolders to another directory showing progress bar and remaining files counter.\
 Allows to preserve a source folder structure and to create a log if necessary.\
 Opens a filedialog if source and/or destination are not given in the command line.\
 Creates folders in a destination path if they don't exist.
 
+## Installing
+
 <pre>
-Usage: selective_copy.py ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]
+pip install slcp
+</pre>
+
+## Usage
+
+<pre>
+slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]
 
 Positional arguments:
 ext                     Extension of the files to copy, enter without a dot.
