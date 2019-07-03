@@ -17,11 +17,11 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
+    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h] [-i]',
                             description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
-    parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
+    parser.add_argument('ext', help='extensions of the files to copy, enter without a dot, and separate with commas', type=str)
     parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
     parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
     group = parser.add_mutually_exclusive_group()
@@ -29,6 +29,7 @@ def parse_args():
     group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
+    parser.add_argument('-i', '--invert', action='store_true', help='invert the extension list')
     args = parser.parse_args()
     if isinstance(args.source, str):
         args.source = os.path.normpath(args.source.strip())
@@ -68,6 +69,7 @@ def check_for_errors(source, destination, extension, total):
     :return: str or NoneType. Error statement or None.
     """
     if not os.path.exists(source):
+        print(source)
         raise Exception(f'Error: Source path {source} does not exist.')
     elif total == 0:
         raise Exception(f'Error: There are no {extension} files in {source}.')
@@ -119,7 +121,7 @@ def select_destination(args):
     return destination
 
 
-def get_todo(source, destination, extension, args):
+def get_todo(source, destination, extensions, args):
     """
     Create a to-do list where each sublist represents one file and contains
     source and destination paths for this file.
@@ -127,7 +129,7 @@ def get_todo(source, destination, extension, args):
     :param destination: str. Destination folder path.
     :param extension: str. Extension of the files to copy.
     :param args: Namespace. Command line arguments.
-    :return: list of list of str. To-do list.
+    :return: list of lists of str pairs. To-do list.
     """
     todo_list = []
     try:
@@ -136,13 +138,15 @@ def get_todo(source, destination, extension, args):
             if args.preserve:
                 path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
             for filename in filenames:
-                if filename.endswith(extension):
+                # invert or extension match, only one can be true to copy.
+                if args.invert ^ (os.path.splitext(filename)[1] in extensions):
                     if args.preserve:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                     else:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(destination, filename)])
     except FileNotFoundError:
         pass
+    print(todo_list)
     return todo_list
 
 
@@ -162,7 +166,7 @@ def show_progress_bar(total, counter=0):
     percent = round(100 * (counter / total))
     filled = int(length * counter // total)
     bar = f'|{"=" * filled}{"-" * (length - filled)}|' if term_width > 50 else ''
-    suffix = f'Files left: {total - counter} ' if counter < total else 'Done           '
+    suffix = f'Files left: {total - counter} / {total}' if counter < total else 'Done           '
     print(f'\rProgress: {bar} {percent}% {suffix}', end='\r', flush=True)
     copied += 1
     if counter == total:
@@ -213,12 +217,13 @@ def main():
     :return: NoneType.
     """
     # checking for errors
-    try:
-        check_for_errors(from_folder, to_folder, extension, total)
-    except Exception as e:
-        logger.error(f'{e}\n')
-        close_log(args, logger)
-        sys.exit(e)
+    for extension in extensions:
+        try:
+            check_for_errors(from_folder, to_folder, extension, total)
+        except Exception as e:
+            logger.error(f'{e}\n')
+            close_log(args, logger)
+            sys.exit(e)
 
     # main block
     if args.preserve:
@@ -233,13 +238,14 @@ def main():
 
 
 parser, args = parse_args()
-extension = f'.{args.ext}'
+# extension = f'.{args.ext}'
+extensions = ['.'+ extension.strip() for extension in args.ext.split(',')]
 from_folder = select_source(args)
 to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
-to_copy = get_todo(from_folder, to_folder, extension, args)
+to_copy = get_todo(from_folder, to_folder, extensions, args)
 total = len(to_copy)
-msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
+msg = f'Copying {total} {"not" if args.invert else ""} {",".join(extensions)} files from {from_folder} to {to_folder}'
 copied = 0
 
 

@@ -1,7 +1,5 @@
 {
     "python.linting.pylintEnabled": true,
-    "python.linting.flake8Enabled": false,
     "python.linting.enabled": true,
     "python.pythonPath": "C:\\Users\\Anvesh\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
-    "python.linting.pep8Enabled": false
 }

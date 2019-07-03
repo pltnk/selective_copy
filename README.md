@@ -20,7 +20,7 @@ pip install slcp
 slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]
 
 Positional arguments:
-ext                     Extension of the files to copy, enter without a dot.
+ext                     Extensions of the files to copy, enter without a dot, separated by commas.
 
 Optional arguments:
 -s SRC, --source SRC    Source folder path.
@@ -28,6 +28,7 @@ Optional arguments:
 -sc, --srccwd           Use current working directory as a source folder.
 -dc, --dstcwd           Use current working directory as a destination folder.
 -p, --preserve          Preserve source folder structure.
+-i, --invert            Inverts the extension list. Copies everything except extensions you provided.
 -l, --log               Create and save log to the destination folder.
 -h, --help              Show this help message and exit.
 </pre>
