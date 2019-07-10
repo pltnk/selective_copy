@@ -30,6 +30,7 @@ Optional arguments:
 -dc, --dstcwd           Use current working directory as a destination folder.
 -p, --preserve          Preserve source folder structure.
 -l, --log               Create and save log to the destination folder.
+-m, --move              Move files instead of copying, be careful with this option.
 -h, --help              Show this help message and exit.
 </pre>
 
