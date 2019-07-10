@@ -170,12 +170,13 @@ def show_progress_bar(total, counter=0):
         print()
 
 
-def copy(todo_list):
+def process(todo_list, action):
     """
     Copy or move files according to source and destination paths
     given in todo_list. Each item in this list represents one file.
     item[0] - source, item[1] - destination.
     :param todo_list: list of list of str.
+    :param action: must be either shutil.copy or shutil.move
     :return: NoneType.
     """
     show_progress_bar(total)
@@ -184,17 +185,11 @@ def copy(todo_list):
             os.makedirs(os.path.dirname(item[1]))
         if not os.path.exists(item[1]):
             logger.info(f'{item[0]}')
-            if args.move:
-                shutil.move(item[0], item[1])
-            else:
-                shutil.copy(item[0], item[1])
+            action(item[0], item[1])
         else:
             new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
             logger.info(f'*{item[0]} saving it as {new_filename}')
-            if args.move:
-                shutil.move(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
-            else:
-                shutil.copy(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+            action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
         show_progress_bar(total, copied)
 
 
@@ -234,7 +229,7 @@ def main():
     else:
         print(msg)
         logger.info(msg)
-    copy(to_copy)
+    process(to_copy, action)
     logger.info(f'Process finished\n')
     close_log(args, logger)
 
@@ -246,8 +241,9 @@ to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
 to_copy = get_todo(from_folder, to_folder, extension, args)
 total = len(to_copy)
-action = 'Moving' if args.move else 'Copying'
-msg = f'{action} {total} {extension} files from {from_folder} to {to_folder}'
+action = shutil.move if args.move else shutil.copy
+prefix = 'Moving' if args.move else 'Copying'
+msg = f'{prefix} {total} {extension} files from {from_folder} to {to_folder}'
 copied = 0
 
 
