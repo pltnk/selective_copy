@@ -18,7 +18,7 @@ pip install slcp
 ## Usage
 
 <pre>
-slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]
+slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]
 
 Positional arguments:
 ext                     Extension of the files to copy, enter without a dot.
