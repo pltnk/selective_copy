@@ -124,13 +124,12 @@ def select_destination(args):
     return destination
 
 
-def get_todo(source, destination, extensions, args):
+def get_todo(source, destination, args):
     """
     Create a to-do list where each sublist represents one file and contains
     source and destination paths for this file.
     :param source: str. Source folder path.
     :param destination: str. Destination folder path.
-    :param extensions: tuple of str. Extensions of the files to copy.
     :param args: Namespace. Command line arguments.
     :return: list of list of str. To-do list.
     """
@@ -140,10 +139,10 @@ def get_todo(source, destination, extensions, args):
         for foldername, _, filenames in os.walk(source):
             if args.preserve:
                 path = os.path.join(destination,
-                                    f'{"_".join(extensions)}_{os.path.basename(source)}',
+                                    f'{"_".join(args.ext)}_{os.path.basename(source)}',
                                     os.path.relpath(foldername))
             for filename in filenames:
-                if filename.endswith(extensions):
+                if filename.endswith(args.ext):
                     if args.preserve:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                     else:
@@ -222,7 +221,7 @@ def main():
     """
     # checking for errors
     try:
-        check_for_errors(from_folder, to_folder, extensions, total)
+        check_for_errors(from_folder, to_folder, args.ext, total)
     except Exception as e:
         logger.error(f'{e}\n')
         close_log(args, logger)
@@ -241,15 +240,14 @@ def main():
 
 
 parser, args = parse_args()
-extensions = args.ext
 from_folder = select_source(args)
 to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
-to_process = get_todo(from_folder, to_folder, extensions, args)
+to_process = get_todo(from_folder, to_folder, args)
 total = len(to_process)
 action = shutil.move if args.move else shutil.copy
 prefix = 'Moving' if args.move else 'Copying'
-msg = f'{prefix} {total} {", ".join(extensions)} files from {from_folder} to {to_folder}'
+msg = f'{prefix} {total} {", ".join(args.ext)} files from {from_folder} to {to_folder}'
 processed = 0
 
 
