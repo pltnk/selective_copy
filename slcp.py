@@ -17,7 +17,7 @@ def parse_args():
     Parse command line arguments and format arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-h]',
+    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]',
                             description='Copy all files with given extension from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
@@ -29,6 +29,7 @@ def parse_args():
     group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
+    parser.add_argument('-m', '--move', action='store_true', help='move files instead of copying, be careful')
     args = parser.parse_args()
     if isinstance(args.source, str):
         args.source = os.path.normpath(args.source.strip())
@@ -132,7 +133,7 @@ def get_todo(source, destination, extension, args):
     todo_list = []
     try:
         os.chdir(source)
-        for foldername, subfolders, filenames in os.walk(source):
+        for foldername, _, filenames in os.walk(source):
             if args.preserve:
                 path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
             for filename in filenames:
@@ -171,7 +172,7 @@ def show_progress_bar(total, counter=0):
 
 def copy(todo_list):
     """
-    Copy files according to source and destination paths
+    Copy or move files according to source and destination paths
     given in todo_list. Each item in this list represents one file.
     item[0] - source, item[1] - destination.
     :param todo_list: list of list of str.
@@ -183,11 +184,17 @@ def copy(todo_list):
             os.makedirs(os.path.dirname(item[1]))
         if not os.path.exists(item[1]):
             logger.info(f'{item[0]}')
-            shutil.copy(item[0], item[1])
+            if args.move:
+                shutil.move(item[0], item[1])
+            else:
+                shutil.copy(item[0], item[1])
         else:
             new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
             logger.info(f'*{item[0]} saving it as {new_filename}')
-            shutil.copy(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+            if args.move:
+                shutil.move(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+            else:
+                shutil.copy(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
         show_progress_bar(total, copied)
 
 
@@ -239,7 +246,8 @@ to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
 to_copy = get_todo(from_folder, to_folder, extension, args)
 total = len(to_copy)
-msg = f'Copying {total} {extension} files from {from_folder} to {to_folder}'
+action = 'Moving' if args.move else 'Copying'
+msg = f'{action} {total} {extension} files from {from_folder} to {to_folder}'
 copied = 0
 
 
