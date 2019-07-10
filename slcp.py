@@ -154,7 +154,7 @@ def show_progress_bar(total, counter=0):
     :param counter: int. Current iteration.
     :return: NoneType.
     """
-    global copied
+    global processed
     try:
         term_width = os.get_terminal_size(0)[0]
     except OSError:
@@ -165,7 +165,7 @@ def show_progress_bar(total, counter=0):
     bar = f'|{"=" * filled}{"-" * (length - filled)}|' if term_width > 50 else ''
     suffix = f'Files left: {total - counter} ' if counter < total else 'Done           '
     print(f'\rProgress: {bar} {percent}% {suffix}', end='\r', flush=True)
-    copied += 1
+    processed += 1
     if counter == total:
         print()
 
@@ -190,7 +190,7 @@ def process(todo_list, action):
             new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
             logger.info(f'*{item[0]} saving it as {new_filename}')
             action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
-        show_progress_bar(total, copied)
+        show_progress_bar(total, processed)
 
 
 def close_log(args, logger):
@@ -229,7 +229,7 @@ def main():
     else:
         print(msg)
         logger.info(msg)
-    process(to_copy, action)
+    process(to_process, action)
     logger.info(f'Process finished\n')
     close_log(args, logger)
 
@@ -239,12 +239,12 @@ extension = f'.{args.ext}'
 from_folder = select_source(args)
 to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
-to_copy = get_todo(from_folder, to_folder, extension, args)
-total = len(to_copy)
+to_process = get_todo(from_folder, to_folder, extension, args)
+total = len(to_process)
 action = shutil.move if args.move else shutil.copy
 prefix = 'Moving' if args.move else 'Copying'
 msg = f'{prefix} {total} {extension} files from {from_folder} to {to_folder}'
-copied = 0
+processed = 0
 
 
 if __name__ == '__main__':
