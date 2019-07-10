@@ -7,7 +7,10 @@
 # Copyright (c) 2019 Kirill Plotnikov
 
 
-import logging, os, shutil, sys
+import logging
+import os
+import shutil
+import sys
 from argparse import ArgumentParser
 from tkinter.filedialog import askdirectory
 
