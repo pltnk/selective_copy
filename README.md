@@ -15,6 +15,8 @@ Creates folders in a destination path if they don't exist.
 pip install slcp
 </pre>
 
+This will install [version 0.1.0](https://github.com/pltnk/selective_copy/releases/tag/v0.1.0)
+
 ## Usage
 
 <pre>
