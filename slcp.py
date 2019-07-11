@@ -1,4 +1,4 @@
-# slcp.py - copies all files with given extension from a directory
+# slcp.py - copies all files with given extensions from a directory
 # and its subfolders to another directory.
 # Allows to preserve source folder structure and to create a log if necessary.
 # Opens a filedialog if source and/or destination are not given in the command line.
@@ -17,14 +17,14 @@ from tkinter.filedialog import askdirectory
 
 def parse_args():
     """
-    Parse command line arguments and format arguments containing paths.
+    Parse command line arguments, format given extensions and arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
     parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]',
-                            description='Copy all files with given extension from a directory and its subfolders '
+                            description='Copy all files with given extensions from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
-    parser.add_argument('ext', help='extension of the files to copy, enter without a dot', type=str)
+    parser.add_argument('ext', nargs='+', help='extensions of the files, enter without a dot, separate by spaces')
     parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
     parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
     group = parser.add_mutually_exclusive_group()
@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     parser.add_argument('-m', '--move', action='store_true', help='move files instead of copying, be careful')
     args = parser.parse_args()
+    args.ext = tuple(set(f'.{item}' for item in args.ext))
     if isinstance(args.source, str):
         args.source = os.path.normpath(args.source.strip())
     if isinstance(args.dest, str):
@@ -61,20 +62,20 @@ def create_logger(args, destination):
     return logger
 
 
-def check_for_errors(source, destination, extension, total):
+def check_for_errors(source, destination, extensions, total):
     """
     Check for errors, raise corresponding
     Exception if any errors occurred.
     :param source: str. Source folder path.
     :param destination: str. Destination folder path.
-    :param extension: str. Extension of files.
-    :param total: int. Number of files with extension in source folder.
+    :param extensions: tuple of str. Extensions of files.
+    :param total: int. Number of files with extensions in source folder.
     :return: str or NoneType. Error statement or None.
     """
     if not os.path.exists(source):
         raise Exception(f'Error: Source path {source} does not exist.')
     elif total == 0:
-        raise Exception(f'Error: There are no {extension} files in {source}.')
+        raise Exception(f'Error: There are no {", ".join(extensions)} files in {source}.')
     elif source in destination:
         raise Exception(f'Error: A destination folder must be outside of source folder. '
                         f'Paths given: source - {source} | destination - {destination}.')
@@ -123,13 +124,12 @@ def select_destination(args):
     return destination
 
 
-def get_todo(source, destination, extension, args):
+def get_todo(source, destination, args):
     """
     Create a to-do list where each sublist represents one file and contains
     source and destination paths for this file.
     :param source: str. Source folder path.
     :param destination: str. Destination folder path.
-    :param extension: str. Extension of the files to copy.
     :param args: Namespace. Command line arguments.
     :return: list of list of str. To-do list.
     """
@@ -138,9 +138,11 @@ def get_todo(source, destination, extension, args):
         os.chdir(source)
         for foldername, _, filenames in os.walk(source):
             if args.preserve:
-                path = os.path.join(destination, f'{extension}_{os.path.basename(source)}', os.path.relpath(foldername))
+                path = os.path.join(destination,
+                                    f'{"_".join(args.ext)}_{os.path.basename(source)}',
+                                    os.path.relpath(foldername))
             for filename in filenames:
-                if filename.endswith(extension):
+                if filename.endswith(args.ext):
                     if args.preserve:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                     else:
@@ -219,7 +221,7 @@ def main():
     """
     # checking for errors
     try:
-        check_for_errors(from_folder, to_folder, extension, total)
+        check_for_errors(from_folder, to_folder, args.ext, total)
     except Exception as e:
         logger.error(f'{e}\n')
         close_log(args, logger)
@@ -238,15 +240,14 @@ def main():
 
 
 parser, args = parse_args()
-extension = f'.{args.ext}'
 from_folder = select_source(args)
 to_folder = select_destination(args)
 logger = create_logger(args, to_folder)
-to_process = get_todo(from_folder, to_folder, extension, args)
+to_process = get_todo(from_folder, to_folder, args)
 total = len(to_process)
 action = shutil.move if args.move else shutil.copy
 prefix = 'Moving' if args.move else 'Copying'
-msg = f'{prefix} {total} {extension} files from {from_folder} to {to_folder}'
+msg = f'{prefix} {total} {", ".join(args.ext)} files from {from_folder} to {to_folder}'
 processed = 0
 
 
