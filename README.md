@@ -5,7 +5,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdde9d33956642129d82d219328ad5cc)](https://www.codacy.com/app/pltnk/selective_copy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pltnk/selective_copy&amp;utm_campaign=Badge_Grade)
 
 Simple command line application that copies all files with given extensions from a directory and its subfolders to another directory showing progress bar and remaining files counter.\
-Allows to preserve a source folder structure, to create a log and to move files instead of copying if necessary.\
+Allows to preserve a source folder structure, to process only files without given extensions, to move files instead of copying and to create a log if necessary.\
 Opens a filedialog if source and/or destination are not given in the command line.\
 Creates folders in a destination path if they don't exist.
 
