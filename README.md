@@ -20,7 +20,7 @@ This will install [version 0.1.0](https://github.com/pltnk/selective_copy/releas
 ## Usage
 
 <pre>
-slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]
+slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]
 
 Positional arguments:
 ext                     One or more extensions of the files to copy. 
