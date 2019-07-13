@@ -20,7 +20,7 @@ def parse_args():
     Parse command line arguments, format given extensions and arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='slcp ext [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]',
+    parser = ArgumentParser(usage='slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]',
                             description='Copy all files with given extensions from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
