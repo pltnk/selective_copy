@@ -20,7 +20,7 @@ This will install [version 0.1.0](https://github.com/pltnk/selective_copy/releas
 ## Usage
 
 <pre>
-slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-l] [-m] [-h]
+slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-l] [-h]
 
 Positional arguments:
 ext                     One or more extensions of the files to copy. 
@@ -32,8 +32,9 @@ Optional arguments:
 -sc, --srccwd           Use current working directory as a source folder.
 -dc, --dstcwd           Use current working directory as a destination folder.
 -p, --preserve          Preserve source folder structure.
--l, --log               Create and save log to the destination folder.
+-i, --invert            Process only files without given extensions.
 -m, --move              Move files instead of copying, be careful with this option.
+-l, --log               Create and save log to the destination folder.
 -h, --help              Show this help message and exit.
 </pre>
 
