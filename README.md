@@ -20,22 +20,24 @@ This will install [version 0.1.0](https://github.com/pltnk/selective_copy/releas
 ## Usage
 
 <pre>
-slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-l] [-h]
+slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]
 
 Positional arguments:
-ext                     One or more extensions of the files to copy. 
-                        Enter extensions without a dot and separate by spaces.
+ext                         One or more extensions of the files to copy. 
+                            Enter extensions without a dot and separate by spaces.
 
 Optional arguments:
--s SRC, --source SRC    Source folder path.
--d DST, --dest DST      Destination folder path.
--sc, --srccwd           Use current working directory as a source folder.
--dc, --dstcwd           Use current working directory as a destination folder.
--p, --preserve          Preserve source folder structure.
--i, --invert            Process only files without given extensions.
--m, --move              Move files instead of copying, be careful with this option.
--l, --log               Create and save log to the destination folder.
--h, --help              Show this help message and exit.
+-s SRC, --source SRC        Source folder path.
+-d DST, --dest DST          Destination folder path.
+-sc, --srccwd               Use current working directory as a source folder.
+-dc, --dstcwd               Use current working directory as a destination folder.
+-p, --preserve              Preserve source folder structure.
+-i, --invert                Process only files without given extensions.
+-m, --move                  Move files instead of copying, be careful with this option.
+-e FILE [FILE ...],         Exclude one or more files from processing.
+--exclude FILE [FILE ...]   Enter filenames with extensions and separate by spaces.
+-l, --log                   Create and save log to the destination folder.
+-h, --help                  Show this help message and exit.
 </pre>
 
 ## License
