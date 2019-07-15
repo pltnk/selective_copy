@@ -1,4 +1,4 @@
-# Selective Copy
+# Selective Copy v0.2.0
 [![Python Version](https://img.shields.io/pypi/pyversions/slcp.svg)](https://www.python.org/downloads/release/python-370/)
 [![PyPi Version](https://img.shields.io/pypi/v/slcp.svg)](https://pypi.org/project/slcp/)
 [![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
@@ -14,8 +14,6 @@ Creates folders in a destination path if they don't exist.
 <pre>
 pip install slcp
 </pre>
-
-This will install [version 0.1.0](https://github.com/pltnk/selective_copy/releases/tag/v0.1.0)
 
 ## Usage
 
@@ -39,6 +37,15 @@ Optional arguments:
 -l, --log                   Create and save log to the destination folder.
 -h, --help                  Show this help message and exit.
 </pre>
+
+## Changelog
+
+### [0.2.0] - 2019-07-15 
+#### Added
+- Support of processing several extensions at once
+- --invert option
+- --move option
+- --exclude option
 
 ## License
 
