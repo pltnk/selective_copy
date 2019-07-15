@@ -147,7 +147,7 @@ def get_todo(source, destination, args):
                                     f'{"not_" if args.invert else ""}{"_".join(args.ext)}_{os.path.basename(source)}',
                                     os.path.relpath(foldername))
             for filename in filenames:
-                if filename.endswith(args.ext) ^ args.invert:
+                if (filename.endswith(args.ext) ^ args.invert) and filename not in args.exclude:
                     if args.preserve:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                     else:
