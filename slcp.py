@@ -43,8 +43,7 @@ def parse_args():
         args.source = os.path.normpath(args.source.strip())
     if args.dest:
         args.dest = os.path.normpath(args.dest.strip())
-    if args.exclude:
-        args.exclude = tuple(set(args.exclude))
+    args.exclude = tuple(set(args.exclude)) if args.exclude else tuple()
     return parser, args
 
 
