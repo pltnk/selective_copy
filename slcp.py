@@ -1,7 +1,7 @@
 # slcp.py - command line application that copies all files with given extensions
 # from a directory and its subfolders to another directory.
 # Allows to preserve a source folder structure, to process only files without given extensions,
-# to move files instead of copying and to create a log if necessary.
+# to move files instead of copying, to exclude certain files from processing and to create a log if necessary.
 # Opens a filedialog if source and/or destination are not given in the command line.
 # Creates folders in destination if they don't exist.
 # This project is licensed under the MIT License.
@@ -21,26 +21,29 @@ def parse_args():
     Parse command line arguments, format given extensions and arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-l] [-h]',
+    parser = ArgumentParser(usage='slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] '
+                                  '[-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]',
                             description='Copy all files with given extensions from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', nargs='+', help='one or more extensions, enter without a dot, separate by spaces')
-    parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
-    parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
+    parser.add_argument('-s', '--source', help='source folder path', metavar='SRC')
+    parser.add_argument('-d', '--dest', help='destination folder path', metavar='DST')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
     group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-i', '--invert', action='store_true', help='process only files without given extensions')
     parser.add_argument('-m', '--move', action='store_true', help='move files instead of copying')
+    parser.add_argument('-e', '--exclude', nargs='+', help='exclude certain files from processing', metavar='FILE')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
     args.ext = tuple(set(f'.{item}' for item in args.ext))
-    if isinstance(args.source, str):
+    if args.source:
         args.source = os.path.normpath(args.source.strip())
-    if isinstance(args.dest, str):
+    if args.dest:
         args.dest = os.path.normpath(args.dest.strip())
+    args.exclude = tuple(set(args.exclude)) if args.exclude else tuple()
     return parser, args
 
 
@@ -144,7 +147,7 @@ def get_todo(source, destination, args):
                                     f'{"not_" if args.invert else ""}{"_".join(args.ext)}_{os.path.basename(source)}',
                                     os.path.relpath(foldername))
             for filename in filenames:
-                if filename.endswith(args.ext) ^ args.invert:
+                if (filename.endswith(args.ext) ^ args.invert) and filename not in args.exclude:
                     if args.preserve:
                         todo_list.append([os.path.join(foldername, filename), os.path.join(path, filename)])
                     else:
@@ -190,13 +193,16 @@ def process(todo_list, action):
     for item in todo_list:
         if not os.path.exists(os.path.dirname(item[1])):
             os.makedirs(os.path.dirname(item[1]))
-        if not os.path.exists(item[1]):
-            logger.info(f'{item[0]}')
-            action(item[0], item[1])
-        else:
-            new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
-            logger.info(f'*{item[0]} saving it as {new_filename}')
-            action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        try:
+            if not os.path.exists(item[1]):
+                logger.info(f'{item[0]}')
+                action(item[0], item[1])
+            else:
+                new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
+                logger.info(f'*{item[0]} saving it as {new_filename}')
+                action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        except Exception as e:
+            logger.error(f'*Unable to process {item[0]}, an error occurred: {e}')
         show_progress_bar(total, processed)
 
 
@@ -244,14 +250,17 @@ logger = create_logger(args, to_folder)
 to_process = get_todo(from_folder, to_folder, args)
 total = len(to_process)
 action = shutil.move if args.move else shutil.copy
+excluded = ', '.join(args.exclude)
+processed = 0
 message = f'{"Moving" if args.move else "Copying"} ' \
           f'{total} file{"s" if total > 1 else ""} ' \
           f'{"without" if args.invert else "with"} ' \
           f'{", ".join(args.ext)} extension{"s" if len(args.ext) > 1 else ""} ' \
           f'from {from_folder} to {to_folder} ' \
-          f'{"preserving source folder structure" if args.preserve else ""}'
-processed = 0
+          f'{"preserving source folder structure" if args.preserve else ""}' \
+          f'{f", excluding {excluded}" if len(args.exclude) > 0 else ""}'
 
 
 if __name__ == '__main__':
     main()
+
