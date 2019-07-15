@@ -250,14 +250,17 @@ logger = create_logger(args, to_folder)
 to_process = get_todo(from_folder, to_folder, args)
 total = len(to_process)
 action = shutil.move if args.move else shutil.copy
+excluded = ', '.join(args.exclude)
+processed = 0
 message = f'{"Moving" if args.move else "Copying"} ' \
           f'{total} file{"s" if total > 1 else ""} ' \
           f'{"without" if args.invert else "with"} ' \
           f'{", ".join(args.ext)} extension{"s" if len(args.ext) > 1 else ""} ' \
           f'from {from_folder} to {to_folder} ' \
-          f'{"preserving source folder structure" if args.preserve else ""}'
-processed = 0
+          f'{"preserving source folder structure" if args.preserve else ""}' \
+          f'{f", excluding {excluded}" if len(args.exclude) > 0 else ""}'
 
 
 if __name__ == '__main__':
     main()
+
