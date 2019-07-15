@@ -40,7 +40,7 @@ Optional arguments:
 
 ## Changelog
 
-### [0.2.0] - 2019-07-15 
+### [v0.2.0] - 2019-07-15 
 #### Added
 - Support of processing several extensions at once
 - --invert option
