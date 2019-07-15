@@ -40,7 +40,7 @@ Optional arguments:
 
 ## Changelog
 
-### [v0.2.0] - 2019-07-15 
+### [v0.2.0](https://github.com/pltnk/selective_copy/releases/tag/v0.2.0) - 2019-07-15 
 #### Added
 - Support of processing several extensions at once
 - --invert option
