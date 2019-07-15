@@ -190,13 +190,16 @@ def process(todo_list, action):
     for item in todo_list:
         if not os.path.exists(os.path.dirname(item[1])):
             os.makedirs(os.path.dirname(item[1]))
-        if not os.path.exists(item[1]):
-            logger.info(f'{item[0]}')
-            action(item[0], item[1])
-        else:
-            new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
-            logger.info(f'*{item[0]} saving it as {new_filename}')
-            action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        try:
+            if not os.path.exists(item[1]):
+                logger.info(f'{item[0]}')
+                action(item[0], item[1])
+            else:
+                new_filename = f'{os.path.basename(os.path.dirname(item[0]))}_{os.path.basename(item[1])}'
+                logger.info(f'*{item[0]} saving it as {new_filename}')
+                action(item[0], os.path.join(os.path.dirname(item[1]), new_filename))
+        except Exception as e:
+            logger.error(f'*Unable to process {item[0]}, an error occurred: {e}')
         show_progress_bar(total, processed)
 
 
