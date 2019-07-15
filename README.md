@@ -47,6 +47,8 @@ Optional arguments:
 - --move option
 - --exclude option
 
+[Compare with v0.1.0](https://github.com/pltnk/selective_copy/compare/v0.1.0...v0.2.0)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
