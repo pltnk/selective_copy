@@ -1,4 +1,4 @@
-# Selective Copy v0.2.0
+# Selective Copy v0.2.1
 [![Python Version](https://img.shields.io/pypi/pyversions/slcp.svg)](https://www.python.org/downloads/release/python-370/)
 [![PyPi Version](https://img.shields.io/pypi/v/slcp.svg)](https://pypi.org/project/slcp/)
 [![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
@@ -39,6 +39,12 @@ Optional arguments:
 </pre>
 
 ## Changelog
+
+### [v0.2.1](https://github.com/pltnk/selective_copy/releases/tag/v0.2.1) - 2019-07-16 
+#### Fixed
+- Readme of the project on [PyPI](https://pypi.org/project/slcp/)
+
+[Compare with v0.2.0](https://github.com/pltnk/selective_copy/compare/v0.2.0...v0.2.1)
 
 ### [v0.2.0](https://github.com/pltnk/selective_copy/releases/tag/v0.2.0) - 2019-07-15 
 #### Added
