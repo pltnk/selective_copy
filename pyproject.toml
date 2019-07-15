@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slcp"
-version = "0.2.0"
+version = "0.2.1"
 description = "Copy all files with given extensions from a directory and its subfolders to another directory."
 authors = ["Kirill Plotnikov <kpltnk@gmail.com>"]
 license = "MIT"
