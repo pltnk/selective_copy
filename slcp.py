@@ -27,8 +27,8 @@ def parse_args():
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
     parser.add_argument('ext', nargs='+', help='one or more extensions, enter without a dot, separate by spaces')
-    parser.add_argument('-s', '--source', help='source folder path', type=str, metavar='SRC')
-    parser.add_argument('-d', '--dest', help='destination folder path', type=str, metavar='DST')
+    parser.add_argument('-s', '--source', help='source folder path', metavar='SRC')
+    parser.add_argument('-d', '--dest', help='destination folder path', metavar='DST')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-sc', '--srccwd', action='store_true', help='use current working directory as a source')
     group.add_argument('-dc', '--dstcwd', action='store_true', help='use current working directory as a destination')
@@ -39,11 +39,12 @@ def parse_args():
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
     args.ext = tuple(set(f'.{item}' for item in args.ext))
-    args.exclude = tuple(set(args.exclude))
-    if isinstance(args.source, str):
+    if args.source:
         args.source = os.path.normpath(args.source.strip())
-    if isinstance(args.dest, str):
+    if args.dest:
         args.dest = os.path.normpath(args.dest.strip())
+    if args.exclude:
+        args.exclude = tuple(set(args.exclude))
     return parser, args
 
 
