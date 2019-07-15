@@ -223,7 +223,7 @@ def close_log(args, logger):
 def main():
     """
     Check for errors and terminate the program if found any.
-    If errors are absent copy files according to the
+    If errors are absent process files according to the
     command line arguments.
     :return: NoneType.
     """
