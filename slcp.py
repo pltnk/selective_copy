@@ -21,7 +21,8 @@ def parse_args():
     Parse command line arguments, format given extensions and arguments containing paths.
     :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
     """
-    parser = ArgumentParser(usage='slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-l] [-h]',
+    parser = ArgumentParser(usage='slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] '
+                                  '[-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]',
                             description='Copy all files with given extensions from a directory and its subfolders '
                                         'to another directory. '
                                         'A destination folder must be outside of a source folder.')
@@ -34,9 +35,11 @@ def parse_args():
     parser.add_argument('-p', '--preserve', action='store_true', help='preserve source folder structure')
     parser.add_argument('-i', '--invert', action='store_true', help='process only files without given extensions')
     parser.add_argument('-m', '--move', action='store_true', help='move files instead of copying')
+    parser.add_argument('-e', '--exclude', nargs='+', help='exclude certain files from processing', metavar='FILE')
     parser.add_argument('-l', '--log', action='store_true', help='create and save log to the destination folder')
     args = parser.parse_args()
     args.ext = tuple(set(f'.{item}' for item in args.ext))
+    args.exclude = tuple(set(args.exclude))
     if isinstance(args.source, str):
         args.source = os.path.normpath(args.source.strip())
     if isinstance(args.dest, str):
