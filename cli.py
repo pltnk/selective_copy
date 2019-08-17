@@ -3,11 +3,10 @@ from argparse import ArgumentParser
 
 
 class ArgParser:
+    """Command line arguments parser."""
+
     def __init__(self):
-        """
-        Parse command line arguments, format given extensions and arguments containing paths.
-        :return: tuple of (ArgumentParser, Namespace). Parser itself and all arguments.
-        """
+        """Parse command line arguments, format given extensions and arguments containing paths."""
         self.parser = ArgumentParser(
             usage="slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] "
             "[-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]",
@@ -26,14 +25,14 @@ class ArgParser:
         self.parser.add_argument(
             "-d", "--dest", help="destination folder path", metavar="DST"
         )
-        self.group = self.parser.add_mutually_exclusive_group()
-        self.group.add_argument(
+        group = self.parser.add_mutually_exclusive_group()
+        group.add_argument(
             "-sc",
             "--srccwd",
             action="store_true",
             help="use current working directory as a source",
         )
-        self.group.add_argument(
+        group.add_argument(
             "-dc",
             "--dstcwd",
             action="store_true",
