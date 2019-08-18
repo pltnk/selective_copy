@@ -1,8 +1,17 @@
+# This module is a part of slcp command line application
+# and is licensed under the MIT License.
+# Copyright (c) 2019 Kirill Plotnikov
+# GitHub: https://github.com/pltnk/selective_copy
+# PyPi: https://pypi.org/project/slcp/
+
+
 import logging
 import os
 
 
 class Log:
+    """Logging handler."""
+
     def __init__(self, args, destination):
         """
         Create logger instance and selective_copy.log file
