@@ -3,6 +3,7 @@
 [![PyPi Version](https://img.shields.io/pypi/v/slcp.svg)](https://pypi.org/project/slcp/)
 [![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdde9d33956642129d82d219328ad5cc)](https://www.codacy.com/app/pltnk/selective_copy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pltnk/selective_copy&amp;utm_campaign=Badge_Grade)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Simple command line application that copies all files with given extensions from a directory and its subfolders to another directory showing progress bar and remaining files counter.\
 Allows to preserve a source folder structure, to process only files without given extensions, to move files instead of copying, to exclude certain files from processing and to create a log if necessary.\
