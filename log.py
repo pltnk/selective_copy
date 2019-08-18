@@ -25,7 +25,7 @@ class Log:
             fh.setFormatter(formatter)
             self.logger.addHandler(fh)
 
-    def close_log(self):
+    def close(self):
         """
         Close selective_copy.log file and remove it from logger
         file handlers if logging is turned on in command line arguments.
