@@ -92,7 +92,9 @@ class Handler:
                 if self.args.preserve:
                     path = os.path.join(
                         self.destination,
-                        f'{"not_" if self.args.invert else ""}{"_".join(self.args.ext)}_{os.path.basename(self.source)}',
+                        f'{"not_" if self.args.invert else ""}'
+                        f'{"_".join(self.args.ext).replace(".", "")}'
+                        f"_{os.path.basename(self.source)}",
                         os.path.relpath(foldername),
                     )
                 for filename in filenames:
