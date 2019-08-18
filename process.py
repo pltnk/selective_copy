@@ -125,7 +125,7 @@ class Handler:
             raise Exception(
                 f'Error: There are no {", ".join(self.args.ext)} files in {self.source}.'
             )
-        elif self.source in self.destination:
+        elif os.path.commonpath([self.source, self.destination]) == self.source:
             raise Exception(
                 f"Error: A destination folder must be outside of source folder. "
                 f"Paths given: source - {self.source} | destination - {self.destination}."
