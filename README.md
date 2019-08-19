@@ -39,7 +39,7 @@ Optional arguments:
 -h, --help                  Show this help message and exit.
 </pre>
 
-###Examples:
+### Examples
 
 [![asciicast](https://asciinema.org/a/263212.svg)](https://asciinema.org/a/263212?autoplay=1)
 
