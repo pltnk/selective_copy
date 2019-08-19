@@ -16,19 +16,19 @@ class Log:
 
     def __init__(self, args, destination):
         """
-        Create logger instance and selective_copy.log file
+        Create logger instance and slcp.log file
         in the destination folder if logging is turned on
         in command line arguments. If not create only logger instance.
         :param args: argparse.Namespace. Command line arguments.
         :param destination: str. Destination folder path.
         """
-        self.logger = logging.getLogger("selective_copy")
+        self.logger = logging.getLogger("slcp")
         self.logger.setLevel(logging.CRITICAL)
         self.log = args.log
         if self.log:
             self.logger.setLevel(logging.INFO)
             fh = logging.FileHandler(
-                os.path.join(destination, "selective_copy.log"), encoding="utf-8"
+                os.path.join(destination, "slcp.log"), encoding="utf-8"
             )
             formatter = logging.Formatter(
                 "%(asctime)s %(message)s", "%d.%m.%Y %H:%M:%S"
