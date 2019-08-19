@@ -10,8 +10,3 @@ Copyright (c) 2019 Kirill Plotnikov
 GitHub: https://github.com/pltnk/selective_copy
 PyPi: https://pypi.org/project/slcp/
 """
-
-
-import slcp.cli
-import slcp.log
-import slcp.process
