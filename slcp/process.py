@@ -178,13 +178,15 @@ class Handler:
             term_width = os.get_terminal_size(0)[0]
         except OSError:
             term_width = 80
-        length = term_width - (len(str(self.total)) + 30)
+        length = term_width - (len(str(self.total)) + 35)
         percent = round(100 * (self.processed / self.total))
         filled = int(length * self.processed // self.total)
         bar = f'|{"=" * filled}{"-" * (length - filled)}|' if term_width > 50 else ""
         suffix = (
             f"Files left: {self.total - self.processed} "
             if self.processed < self.total
+            else "Done, log saved"
+            if self.args.log
             else "Done           "
         )
         print(f"\rProgress: {bar} {percent}% {suffix}", end="\r", flush=True)

@@ -45,4 +45,3 @@ class Log:
         if self.log:
             self.logger.handlers[0].close()
             self.logger.handlers = []
-            print("Log saved")
