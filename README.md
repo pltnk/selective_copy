@@ -46,7 +46,7 @@ Optional arguments:
 - [Black](https://github.com/psf/black) code style
 
 #### Changed
-- The code is now devided into separate modules
+- The code is now divided into separate modules
 - Dots that come with extensions are removed from output folder name. 
 The reason is that folders with a name starting with a dot are considered as hidden on Linux.
 - Log saving indication
