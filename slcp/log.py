@@ -19,7 +19,7 @@ class Log:
         Create logger instance and selective_copy.log file
         in the destination folder if logging is turned on
         in command line arguments. If not create only logger instance.
-        :param args: Namespace. Command line arguments.
+        :param args: argparse.Namespace. Command line arguments.
         :param destination: str. Destination folder path.
         """
         self.logger = logging.getLogger("selective_copy")
