@@ -7,8 +7,8 @@ PyPi: https://pypi.org/project/slcp/
 """
 
 
-from .cli import ArgParser
-from .process import Handler
+from slcp.cli import ArgParser
+from slcp.process import Handler
 
 
 def main():
