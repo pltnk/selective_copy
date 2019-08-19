@@ -10,7 +10,7 @@ import shutil
 import sys
 from tkinter.filedialog import askdirectory
 
-from log import Log
+from .log import Log
 
 
 class Handler:

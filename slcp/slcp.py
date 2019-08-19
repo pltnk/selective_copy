@@ -10,8 +10,8 @@
 # PyPi: https://pypi.org/project/slcp/
 
 
-from cli import ArgParser
-from process import Handler
+from .cli import ArgParser
+from .process import Handler
 
 
 def main():
