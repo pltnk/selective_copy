@@ -42,13 +42,16 @@ Optional arguments:
 ## Changelog
 
 ### [v0.3.0](https://github.com/pltnk/selective_copy/releases/tag/v0.3.0) - 2019-08-19 
+#### Added
+- [Black](https://github.com/psf/black) code style
+
 #### Changed
 - The code is now devided into separate modules
 - Dots that come with extensions are removed from output folder name. 
-The reason is that folders with a name like '.folder' are considered as hidden on Linux.
+The reason is that folders with a name starting with a dot are considered as hidden on Linux.
 
 #### Fixed
-- Issue when paths like /home/user/test and /home/user/test2 were considered as nested.
+- Issue when paths like /home/user/test and /home/user/test2 were considered as nested which lead to an error.
 
 [Compare with v0.2.1](https://github.com/pltnk/selective_copy/compare/v0.2.1...v0.3.0)
 
