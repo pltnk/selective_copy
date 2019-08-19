@@ -50,6 +50,7 @@ Optional arguments:
 - Dots that come with extensions are removed from output folder name. 
 The reason is that folders with a name starting with a dot are considered as hidden on Linux.
 - Log saving indication
+- Name of the logfile
 
 #### Fixed
 - Issue when paths like /home/user/test and /home/user/test2 were considered as nested which lead to an error.
