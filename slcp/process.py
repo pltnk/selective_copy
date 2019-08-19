@@ -19,6 +19,10 @@ class Handler:
     """File processing handler."""
 
     def __init__(self, args):
+        """
+        Initialize Handler object according to arguments given in the command line.
+        :param args: argparse.Namespace. Command line arguments.
+        """
         self.args = args
         self.source = self.select_source()
         self.destination = self.select_destination()
