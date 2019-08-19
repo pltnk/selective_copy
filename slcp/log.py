@@ -1,8 +1,10 @@
-# This module is a part of slcp command line application
-# and is licensed under the MIT License.
-# Copyright (c) 2019 Kirill Plotnikov
-# GitHub: https://github.com/pltnk/selective_copy
-# PyPi: https://pypi.org/project/slcp/
+"""
+This module is a part of slcp command line application
+and is licensed under the MIT License.
+Copyright (c) 2019 Kirill Plotnikov
+GitHub: https://github.com/pltnk/selective_copy
+PyPi: https://pypi.org/project/slcp/
+"""
 
 
 import logging
