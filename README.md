@@ -40,6 +40,7 @@ Optional arguments:
 </pre>
 
 ###Examples:
+
 [![asciicast](https://asciinema.org/a/263212.svg)](https://asciinema.org/a/263212?autoplay=1)
 
 ## Changelog
