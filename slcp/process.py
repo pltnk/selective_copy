@@ -144,7 +144,7 @@ class Handler:
     def process(self):
         """
         Copy or move files according to source and destination paths
-        given in todo_list. Each item in this list represents one file.
+        given in self.todo_list. Each item in this list represents one file.
         item[0] - source, item[1] - destination.
         :return: NoneType.
         """
