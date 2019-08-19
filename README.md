@@ -38,6 +38,8 @@ Optional arguments:
 -l, --log                   Create and save log to the destination folder.
 -h, --help                  Show this help message and exit.
 </pre>
+
+###Examples:
 [![asciicast](https://asciinema.org/a/263212.svg)](https://asciinema.org/a/263212?autoplay=1)
 
 ## Changelog
