@@ -37,8 +37,8 @@ class Handler:
             f'{self.total} file{"s" if self.total > 1 else ""} '
             f'{"without" if args.invert else "with"} '
             f'{", ".join(args.ext)} extension{"s" if len(args.ext) > 1 else ""} '
-            f"from {self.source} to {self.destination} "
-            f'{"preserving source folder structure" if args.preserve else ""}'
+            f"from {self.source} to {self.destination}"
+            f'{" preserving source folder structure" if args.preserve else ""}'
             f'{f", excluding {self.excluded}" if len(args.exclude) > 0 else ""}'
         )
         try:
