@@ -41,7 +41,7 @@ Optional arguments:
 
 ### Examples
 
-[![asciicast](https://asciinema.org/a/263359.svg)](https://asciinema.org/a/263359?autoplay=1)
+[![asciicast](https://asciinema.org/a/263359.svg)](https://asciinema.org/a/263359?t=2)
 
 ## Changelog
 
