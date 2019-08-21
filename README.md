@@ -12,9 +12,7 @@ Creates folders in a destination path if they don't exist.
 
 ## Installing
 
-<pre>
-pip install slcp
-</pre>
+```pip install slcp```
 
 ## Usage
 
