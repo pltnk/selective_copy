@@ -1,8 +1,9 @@
-# Selective Copy v0.2.1
+# Selective Copy v0.3.0
 [![Python Version](https://img.shields.io/pypi/pyversions/slcp.svg)](https://www.python.org/downloads/release/python-370/)
 [![PyPi Version](https://img.shields.io/pypi/v/slcp.svg)](https://pypi.org/project/slcp/)
-[![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bdde9d33956642129d82d219328ad5cc)](https://www.codacy.com/app/pltnk/selective_copy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pltnk/selective_copy&amp;utm_campaign=Badge_Grade)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License](https://img.shields.io/github/license/pltnk/selective_copy.svg)](https://choosealicense.com/licenses/mit/)
 
 Simple command line application that copies all files with given extensions from a directory and its subfolders to another directory showing progress bar and remaining files counter.\
 Allows to preserve a source folder structure, to process only files without given extensions, to move files instead of copying, to exclude certain files from processing and to create a log if necessary.\
@@ -11,9 +12,7 @@ Creates folders in a destination path if they don't exist.
 
 ## Installing
 
-<pre>
-pip install slcp
-</pre>
+```pip install slcp```
 
 ## Usage
 
@@ -38,7 +37,27 @@ Optional arguments:
 -h, --help                  Show this help message and exit.
 </pre>
 
+### Examples
+
+[![asciicast](https://asciinema.org/a/263359.svg)](https://asciinema.org/a/263359?t=2)
+
 ## Changelog
+
+### [v0.3.0](https://github.com/pltnk/selective_copy/releases/tag/v0.3.0) - 2019-08-22 
+#### Added
+- [Black](https://github.com/psf/black) code style
+
+#### Changed
+- The code is now divided into separate modules
+- Dots that come with extensions are removed from output folder name. 
+The reason is that folders with a name starting with a dot are considered as hidden on Linux.
+- Log saving indication
+- Name of the logfile
+
+#### Fixed
+- Issue when paths like /home/user/test and /home/user/test2 were considered as nested which lead to an error.
+
+[Compare with v0.2.1](https://github.com/pltnk/selective_copy/compare/v0.2.1...v0.3.0)
 
 ### [v0.2.1](https://github.com/pltnk/selective_copy/releases/tag/v0.2.1) - 2019-07-16 
 #### Added
