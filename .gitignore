@@ -2,3 +2,5 @@
 dist/
 .idea/
 /examples.sh
+.vscode/
+env

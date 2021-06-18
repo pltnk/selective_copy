@@ -18,7 +18,7 @@ class ArgParser:
         """Parse command line arguments, format given extensions and arguments containing paths."""
         self.parser = ArgumentParser(
             usage="slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] "
-            "[-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]",
+            "[-p] [-pm] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]",
             description="Copy all files with given extensions from a directory and its subfolders "
             "to another directory. "
             "A destination folder must be outside of a source folder.",
@@ -60,7 +60,16 @@ class ArgParser:
             help="process only files without given extensions",
         )
         self.parser.add_argument(
-            "-m", "--move", action="store_true", help="move files instead of copying"
+            "-pm",
+            "--preservemetadata",
+            action="store_true",
+            help="try to preserve files and folders metadata",
+        )
+        self.parser.add_argument(
+            "-m",
+            "--move",
+            action="store_true",
+            help="move files instead of copying"
         )
         self.parser.add_argument(
             "-e",
