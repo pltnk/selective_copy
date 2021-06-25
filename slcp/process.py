@@ -10,8 +10,8 @@ PyPi: https://pypi.org/project/slcp/
 import os
 import shutil
 import sys
+import tkinter as tk
 from tkinter.filedialog import askdirectory
-
 from slcp.log import Log
 
 
@@ -29,7 +29,12 @@ class Handler:
         self.log = Log(args, self.destination)
         self.todo = self.get_todo()
         self.total = len(self.todo)
-        self.action = shutil.move if args.move else shutil.copy
+        if args.preservemetadata:
+            self.action = shutil.copy2
+        elif args.move:
+            self.action = shutil.move
+        else:
+            self.action = shutil.copy
         self.excluded = ", ".join(args.exclude)
         self.processed = 0
         self.message = (
@@ -54,12 +59,15 @@ class Handler:
         if not ask user for input using filedialog.
         :return: str. Source folder path.
         """
+
+        root = tk.Tk()
+        root.withdraw()
         if self.args.srccwd:
             source = os.getcwd()
         else:
             if self.args.source is None:
                 print("Choose a source path.")
-                source = os.path.normpath(askdirectory())
+                source = os.path.normpath(askdirectory(title="slcp - Select the source"))
                 print(f"Source path: {source}")
             else:
                 source = self.args.source
@@ -72,12 +80,14 @@ class Handler:
         If the destination path in arguments does not exist create it.
         :return: str. Destination folder path.
         """
+        root = tk.Tk()
+        root.withdraw()
         if self.args.dstcwd:
             destination = os.getcwd()
         else:
             if self.args.dest is None:
                 print("Choose a destination path.")
-                destination = os.path.normpath(askdirectory())
+                destination = os.path.normpath(askdirectory(title="slcp - Select the destination"))
                 print(f"Destination path: {destination}")
             else:
                 destination = self.args.dest
