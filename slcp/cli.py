@@ -18,7 +18,7 @@ class ArgParser:
         """Parse command line arguments, format given extensions and arguments containing paths."""
         self.parser = ArgumentParser(
             usage="slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] "
-            "[-p] [-pm] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]",
+            "[-p] [-i] [-pm | -m] [-e FILE [FILE ...]] [-l] [-h]",
             description="Copy all files with given extensions from a directory and its subfolders "
             "to another directory. "
             "A destination folder must be outside of a source folder.",
@@ -34,14 +34,14 @@ class ArgParser:
         self.parser.add_argument(
             "-d", "--dest", help="destination folder path", metavar="DST"
         )
-        group = self.parser.add_mutually_exclusive_group()
-        group.add_argument(
+        sc_dc_group = self.parser.add_mutually_exclusive_group()
+        sc_dc_group.add_argument(
             "-sc",
             "--srccwd",
             action="store_true",
             help="use current working directory as a source",
         )
-        group.add_argument(
+        sc_dc_group.add_argument(
             "-dc",
             "--dstcwd",
             action="store_true",
@@ -59,17 +59,15 @@ class ArgParser:
             action="store_true",
             help="process only files without given extensions",
         )
-        self.parser.add_argument(
+        pm_m_group = self.parser.add_mutually_exclusive_group()
+        pm_m_group.add_argument(
             "-pm",
-            "--preservemetadata",
+            "--preserve-meta",
             action="store_true",
-            help="try to preserve files and folders metadata",
+            help="try to preserve metadata of files and folders",
         )
-        self.parser.add_argument(
-            "-m",
-            "--move",
-            action="store_true",
-            help="move files instead of copying"
+        pm_m_group.add_argument(
+            "-m", "--move", action="store_true", help="move files instead of copying"
         )
         self.parser.add_argument(
             "-e",
