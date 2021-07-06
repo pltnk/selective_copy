@@ -12,6 +12,7 @@ import shutil
 import sys
 import tkinter as tk
 from tkinter.filedialog import askdirectory
+
 from slcp.log import Log
 
 
@@ -29,7 +30,7 @@ class Handler:
         self.log = Log(args, self.destination)
         self.todo = self.get_todo()
         self.total = len(self.todo)
-        if args.preservemetadata:
+        if args.preserve_meta:
             self.action = shutil.copy2
         elif args.move:
             self.action = shutil.move
@@ -67,7 +68,9 @@ class Handler:
         else:
             if self.args.source is None:
                 print("Choose a source path.")
-                source = os.path.normpath(askdirectory(title="slcp - Select the source"))
+                source = os.path.normpath(
+                    askdirectory(title="slcp - Select the source")
+                )
                 print(f"Source path: {source}")
             else:
                 source = self.args.source
@@ -87,7 +90,9 @@ class Handler:
         else:
             if self.args.dest is None:
                 print("Choose a destination path.")
-                destination = os.path.normpath(askdirectory(title="slcp - Select the destination"))
+                destination = os.path.normpath(
+                    askdirectory(title="slcp - Select the destination")
+                )
                 print(f"Destination path: {destination}")
             else:
                 destination = self.args.dest
