@@ -60,17 +60,17 @@ class Handler:
         if not ask user for input using filedialog.
         :return: str. Source folder path.
         """
-
-        root = tk.Tk()
-        root.withdraw()
         if self.args.srccwd:
             source = os.getcwd()
         else:
             if self.args.source is None:
                 print("Choose a source path.")
+                root = tk.Tk()
+                root.withdraw()
                 source = os.path.normpath(
                     askdirectory(title="slcp - Select the source")
                 )
+                root.destroy()
                 print(f"Source path: {source}")
             else:
                 source = self.args.source
@@ -83,16 +83,18 @@ class Handler:
         If the destination path in arguments does not exist create it.
         :return: str. Destination folder path.
         """
-        root = tk.Tk()
-        root.withdraw()
+
         if self.args.dstcwd:
             destination = os.getcwd()
         else:
             if self.args.dest is None:
                 print("Choose a destination path.")
+                root = tk.Tk()
+                root.withdraw()
                 destination = os.path.normpath(
                     askdirectory(title="slcp - Select the destination")
                 )
+                root.destroy()
                 print(f"Destination path: {destination}")
             else:
                 destination = self.args.dest
