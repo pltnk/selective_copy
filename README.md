@@ -17,7 +17,7 @@ Creates folders in a destination path if they don't exist.
 ## Usage
 
 <pre>
-slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-m] [-e FILE [FILE ...]] [-l] [-h]
+slcp ext [ext ...] [-s SRC] [-d DST] [-sc | -dc] [-p] [-i] [-pm | -m] [-e FILE [FILE ...]] [-l] [-h]
 
 Positional arguments:
 ext                         One or more extensions of the files to copy. 
@@ -30,6 +30,7 @@ Optional arguments:
 -dc, --dstcwd               Use current working directory as a destination folder.
 -p, --preserve              Preserve source folder structure.
 -i, --invert                Process only files without given extensions.
+-pm, --preserve-meta        Try to preserve metadata of processed files and folders.
 -m, --move                  Move files instead of copying, be careful with this option.
 -e FILE [FILE ...],         Exclude one or more files from processing.
 --exclude FILE [FILE ...]   Enter filenames with extensions and separate by spaces.
