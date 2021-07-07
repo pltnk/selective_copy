@@ -1,7 +1,7 @@
 """
 This module is a part of slcp command line application
 and is licensed under the MIT License.
-Copyright (c) 2019 Kirill Plotnikov
+Copyright (c) 2019-2021 Kirill Plotnikov
 GitHub: https://github.com/pltnk/selective_copy
 PyPi: https://pypi.org/project/slcp/
 """

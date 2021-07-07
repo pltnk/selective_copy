@@ -1,7 +1,7 @@
 """
 This module is a part of slcp command line application
 and is licensed under the MIT License.
-Copyright (c) 2019 Kirill Plotnikov
+Copyright (c) 2019-2021 Kirill Plotnikov
 GitHub: https://github.com/pltnk/selective_copy
 PyPi: https://pypi.org/project/slcp/
 """
@@ -83,7 +83,6 @@ class Handler:
         If the destination path in arguments does not exist create it.
         :return: str. Destination folder path.
         """
-
         if self.args.dstcwd:
             destination = os.getcwd()
         else:
